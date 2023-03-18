@@ -29,6 +29,18 @@ expo
 }
 ```
 
+```json
+{
+  "expo": {
+    "ios": {
+      "infoPlist": {
+        "NSBluetoothAlwaysUsageDescription": "can i use bluetooth"
+      }
+    }
+  }
+}
+```
+
 remove web platform from `expo-module.config.json`
 
 remove view files form java/ios

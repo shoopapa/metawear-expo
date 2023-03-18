@@ -8,7 +8,14 @@ import React
 import MessageUI
 import BoltsSwift
 
+struct State : Codable {
+    var signalStrength: String?;
+    var macAdress: String?;
+    var batteryPercent: String?;
+}
+
 public class MetawearExpoModule: Module {
+  var device: MetaWear?
   // Each module class must implement the definition function. The definition consists of components
   // that describes the module's functionality and behavior.
   // See https://docs.expo.dev/modules/module-api for more details about available components.
@@ -24,21 +31,19 @@ public class MetawearExpoModule: Module {
     ])
 
     // Defines event names that the module can send to JavaScript.
-    Events("onChange")
+    Events("deviceState")
 
-    // Defines a JavaScript synchronous function that runs the native code on the JavaScript thread.
-    Function("hello") {
-      return "Hello world! 👋"
+    AsyncFunction("getState") { (promise: Promise) in
+      let state = State(
+        signalStrength: String(self.device?.averageRSSI(lastNSeconds: 5) ?? 0),
+        macAdress: device?.mac! ??  "",
+        batteryPercent: "none"
+      )
+      let jsonData = try JSONEncoder().encode(state)
+      let jsonString = String(data: jsonData, encoding: .utf8)!
+      promise.resolve(jsonString)
     }
 
-    // Defines a JavaScript function that always returns a Promise and whose native code
-    // is by default dispatched on the different thread than the JavaScript runtime runs on.
-    AsyncFunction("setValueAsync") { (value: String) in
-      // Send an event to JavaScript.
-      self.sendEvent("onChange", [
-        "value": value
-      ])
-    }
 
     AsyncFunction("connect") { (promise: Promise) in
       MetaWearScanner.shared.startScan(allowDuplicates: true) { (device) in
@@ -53,7 +58,8 @@ public class MetawearExpoModule: Module {
               t.result?.continueWith { t in
                 promise.resolve("error: could not connect 2")
               }
-
+              device.remember()
+              self.device = device
               promise.resolve("connected!")
             }
           }

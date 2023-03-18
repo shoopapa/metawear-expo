@@ -20,6 +20,10 @@ export async function connnect() {
   return await MetawearExpoModule.connect();
 }
 
+export async function getState() {
+  return await MetawearExpoModule.getState();
+}
+
 const emitter = new EventEmitter(
   MetawearExpoModule ?? NativeModulesProxy.MetawearExpo
 );

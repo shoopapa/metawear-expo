@@ -14,7 +14,10 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "expo.modules.metawearexpo.example"
+      "bundleIdentifier": "expo.modules.metawearexpo.example",
+      "infoPlist": {
+        "NSBluetoothAlwaysUsageDescription": "Can I use bluetooth"
+      }
     },
     "android": {
       "adaptiveIcon": {

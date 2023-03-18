@@ -1,6 +1,6 @@
 import { Button, StyleSheet, Text, View } from 'react-native';
 
-import { hello, connnect } from 'metawear-expo';
+import { hello, connnect, getState } from 'metawear-expo';
 
 export default function App() {
   return (
@@ -10,6 +10,13 @@ export default function App() {
         title='connect'
         onPress={async () => {
           const x = await connnect()
+          console.log(x)
+        }}
+      ></Button>
+      <Button
+        title='connect'
+        onPress={async () => {
+          const x = await getState()
           console.log(x)
         }}
       ></Button>
