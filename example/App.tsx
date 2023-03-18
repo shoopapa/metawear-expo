@@ -1,11 +1,18 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { Button, StyleSheet, Text, View } from 'react-native';
 
-import { hello } from 'metawear-expo';
+import { hello, connnect } from 'metawear-expo';
 
 export default function App() {
   return (
     <View style={styles.container}>
       <Text>{hello()}</Text>
+      <Button
+        title='connect'
+        onPress={async () => {
+          const x = await connnect()
+          console.log(x)
+        }}
+      ></Button>
     </View>
   );
 }

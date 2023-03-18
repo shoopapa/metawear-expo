@@ -40,7 +40,7 @@ public class MetawearExpoModule: Module {
       ])
     }
 
-    AsyncFunction("connect") { (message: String, promise: Promise) in
+    AsyncFunction("connect") { (promise: Promise) in
       MetaWearScanner.shared.startScan(allowDuplicates: true) { (device) in
         print("wee found a device!")
         // Hooray! We found a MetaWear board, so stop scanning for more
@@ -48,10 +48,10 @@ public class MetawearExpoModule: Module {
           MetaWearScanner.shared.stopScan()
           device.connectAndSetup().continueWith { t in
             if let error = t.error {
-              promise.resolve("error: could not connect")
+              promise.resolve("error: could not connect 1")
             } else {
               t.result?.continueWith { t in
-                promise.resolve("error: could not connect")
+                promise.resolve("error: could not connect 2")
               }
 
               promise.resolve("connected!")

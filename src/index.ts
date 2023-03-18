@@ -16,8 +16,8 @@ export function hello(): string {
   return MetawearExpoModule.hello();
 }
 
-export async function setValueAsync(value: string) {
-  return await MetawearExpoModule.setValueAsync(value);
+export async function connnect() {
+  return await MetawearExpoModule.connect();
 }
 
 const emitter = new EventEmitter(
