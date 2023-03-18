@@ -1,11 +1,11 @@
 import { StyleSheet, Text, View } from 'react-native';
 
-import * as MetawearExpo from 'metawear-expo';
+import { hello } from 'metawear-expo';
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <Text>{MetawearExpo.hello()}</Text>
+      <Text>{hello()}</Text>
     </View>
   );
 }

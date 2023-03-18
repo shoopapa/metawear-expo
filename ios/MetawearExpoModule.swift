@@ -1,5 +1,13 @@
 import ExpoModulesCore
 
+import Foundation
+import MetaWear
+import MetaWearCpp
+import React
+
+import MessageUI
+import BoltsSwift
+
 public class MetawearExpoModule: Module {
   // Each module class must implement the definition function. The definition consists of components
   // that describes the module's functionality and behavior.
@@ -32,13 +40,29 @@ public class MetawearExpoModule: Module {
       ])
     }
 
-    // Enables the module to be used as a native view. Definition components that are accepted as part of the
-    // view definition: Prop, Events.
-    View(MetawearExpoView.self) {
-      // Defines a setter for the `name` prop.
-      Prop("name") { (view: MetawearExpoView, prop: String) in
-        print(prop)
+    AsyncFunction("connect") { (message: String, promise: Promise) in
+      MetaWearScanner.shared.startScan(allowDuplicates: true) { (device) in
+        print("wee found a device!")
+        // Hooray! We found a MetaWear board, so stop scanning for more
+        if device.rssi > -80 {
+          MetaWearScanner.shared.stopScan()
+          device.connectAndSetup().continueWith { t in
+            if let error = t.error {
+              promise.resolve("error: could not connect")
+            } else {
+              t.result?.continueWith { t in
+                promise.resolve("error: could not connect")
+              }
+
+              promise.resolve("connected!")
+            }
+          }
+        }
       }
     }
+
+
+
+
   }
 }
