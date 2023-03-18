@@ -1,0 +1,9 @@
+{
+  "platforms": ["ios", "android", "web"],
+  "ios": {
+    "modules": ["MetawearExpoModule"]
+  },
+  "android": {
+    "modules": ["expo.modules.metawearexpo.MetawearExpoModule"]
+  }
+}

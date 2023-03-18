@@ -1,0 +1,10 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true,
+    "paths": {
+      "metawear-expo": ["../src/index"],
+      "metawear-expo/*": ["../src/*"]
+    }
+  }
+}
