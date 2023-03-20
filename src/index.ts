@@ -9,19 +9,20 @@ import {
 import MetawearExpoModule from "./MetawearExpoModule";
 import { ChangeEventPayload } from "./MetawearExpo.types";
 
-// Get the native constant value.
-export const PI = MetawearExpoModule.PI;
-
-export function hello(): string {
-  return MetawearExpoModule.hello();
-}
-
-export async function connnect() {
+export async function connnect(): Promise<string> {
   return await MetawearExpoModule.connect();
 }
+export async function battery(): Promise<string> {
+  return await MetawearExpoModule.battery();
+}
 
-export async function getState() {
-  return await MetawearExpoModule.getState();
+export async function mac(): Promise<string> {
+  return await MetawearExpoModule.mac();
+}
+
+export async function blink(): Promise<void> {
+  await MetawearExpoModule.blink();
+  return;
 }
 
 const emitter = new EventEmitter(

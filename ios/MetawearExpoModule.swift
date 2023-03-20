@@ -14,34 +14,43 @@ struct State : Codable {
     var batteryPercent: String?;
 }
 
+let DISCONNECT_EVENT = "disconnect"
 public class MetawearExpoModule: Module {
   var device: MetaWear?
   // Each module class must implement the definition function. The definition consists of components
   // that describes the module's functionality and behavior.
   // See https://docs.expo.dev/modules/module-api for more details about available components.
   public func definition() -> ModuleDefinition {
-    // Sets the name of the module that JavaScript code will use to refer to the module. Takes a string as an argument.
-    // Can be inferred from module's class name, but it's recommended to set it explicitly for clarity.
-    // The module will be accessible from `requireNativeModule('MetawearExpo')` in JavaScript.
     Name("MetawearExpo")
 
-    // Sets constant properties on the module. Can take a dictionary or a closure that returns a dictionary.
-    Constants([
-      "PI": Double.pi
-    ])
-
     // Defines event names that the module can send to JavaScript.
-    Events("deviceState")
+    Events(DISCONNECT_EVENT)
 
-    AsyncFunction("getState") { (promise: Promise) in
-      let state = State(
-        signalStrength: String(self.device?.averageRSSI(lastNSeconds: 5) ?? 0),
-        macAdress: device?.mac! ??  "",
-        batteryPercent: "none"
-      )
-      let jsonData = try JSONEncoder().encode(state)
-      let jsonString = String(data: jsonData, encoding: .utf8)!
-      promise.resolve(jsonString)
+    AsyncFunction("battery") { (promise: Promise) in
+      if let board = self.device?.board {
+          let batt = mbl_mw_settings_get_battery_state_data_signal(board);
+          batt?.read().continueOnSuccessWith {
+            let b = String(($0.valueAs() as MblMwBatteryState).charge)
+            promise.resolve(b)
+          }
+      }
+    }
+
+    AsyncFunction("mac") { (promise: Promise) in
+      if let device = self.device {
+        promise.resolve(device.mac)
+      }
+    }
+
+    AsyncFunction("blink") { (promise: Promise) in
+      if let device = self.device {
+        device.flashLED(color: .blue, intensity: 1.0, _repeat: 4)
+        mbl_mw_haptic_start_motor(device.board, 100, 500)
+        let cancel = DispatchWorkItem {
+          promise.resolve("done")
+        }
+        DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 3, execute: cancel )
+      }
     }
 
 
@@ -52,11 +61,11 @@ public class MetawearExpoModule: Module {
         if device.rssi > -80 {
           MetaWearScanner.shared.stopScan()
           device.connectAndSetup().continueWith { t in
-            if let error = t.error {
+            if t.error != nil {
               promise.resolve("error: could not connect 1")
             } else {
               t.result?.continueWith { t in
-                promise.resolve("error: could not connect 2")
+                  self.sendEvent(DISCONNECT_EVENT, ["message": "disconnect"])
               }
               device.remember()
               self.device = device

@@ -4,6 +4,7 @@ Added Metawear to podspec
 
 ```ruby
   s.dependency "MetaWear", '~> 4.1.3'
+  s.dependency "MetaWear/AsyncUtils"
   s.dependency 'iOSDFULibrary'
 ```
 

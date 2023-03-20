@@ -1,11 +1,10 @@
-import { Button, StyleSheet, Text, View } from 'react-native';
+import { Button, StyleSheet, View } from 'react-native';
 
-import { hello, connnect, getState } from 'metawear-expo';
+import { connnect, battery, mac, blink } from 'metawear-expo';
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <Text>{hello()}</Text>
       <Button
         title='connect'
         onPress={async () => {
@@ -14,9 +13,23 @@ export default function App() {
         }}
       ></Button>
       <Button
-        title='connect'
+        title='battery'
         onPress={async () => {
-          const x = await getState()
+          const x = await battery()
+          console.log(x)
+        }}
+      ></Button>
+      <Button
+        title='mac'
+        onPress={async () => {
+          const x = await mac()
+          console.log(x)
+        }}
+      ></Button>
+      <Button
+        title='blink'
+        onPress={async () => {
+          const x = await blink()
           console.log(x)
         }}
       ></Button>

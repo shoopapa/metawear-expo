@@ -17,6 +17,7 @@ Pod::Spec.new do |s|
 
   s.dependency 'ExpoModulesCore'
   s.dependency "MetaWear", '~> 4.1.3'
+  s.dependency "MetaWear/AsyncUtils"
   s.dependency 'iOSDFULibrary'
 
   # Swift/Objective-C compatibility
